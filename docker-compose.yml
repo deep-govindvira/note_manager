@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  database:
+    image: mysql:latest
+    container_name: note_manager_database-container
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: localdb
+    volumes:
+      - mysql-data:/var/lib/mysql  # Persist MySQL data
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend  # Build from the local backend directory
+    image: note_manager_backend-image
+    container_name: note_manager_backend-container
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/localdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  frontend:
+    image: note_manager_frontend-image  # Replace with your actual frontend image
+    container_name: note_manager_frontend-container
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:  # Declare a volume to persist MySQL data
