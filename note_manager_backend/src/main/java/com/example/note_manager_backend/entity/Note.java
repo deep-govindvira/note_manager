@@ -1,28 +1,33 @@
 package com.example.note_manager_backend.entity;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
+@Data
 @Entity
 @Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Note {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String title;
-
     private String description;
+    private String color;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_emailID", nullable = false)
+    @JsonBackReference
+    private User user;
 }
