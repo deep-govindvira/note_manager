@@ -1,37 +1,22 @@
-import axios from "axios";
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import About from "./components/About";
+import Response from "./components/Response";
+import Profile from './components/Profile';
 
 function App() {
-  const [message, setMessage] = useState("");
-  const [response, setResponse] = useState("");
-
-  const sendMessage = () => {
-    axios
-      .post("http://localhost:8080/api/echo", { message })
-      .then((res) => setResponse(res.data.message))
-      .catch((err) => console.error(err));
-  };
-
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>React-Spring Boot Echo App</h1>
-      <input
-        type="text"
-        placeholder="Type a message"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button onClick={sendMessage}>Send</button>
-      {response && (
-        <div style={{ marginTop: "20px" }}>
-          <h2>Response from Backend:</h2>
-          <p>{response}</p>
-        </div>
-      )}
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/response" element={<Response />} />
+        <Route path="/profile/:name" element={<Profile />} />
+      </Routes>
+    </Router>
   );
 }
 
-
-export default App
+export default App;
