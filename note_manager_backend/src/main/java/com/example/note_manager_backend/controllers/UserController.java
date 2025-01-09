@@ -5,16 +5,17 @@ import com.example.note_manager_backend.entity.User;
 import com.example.note_manager_backend.interfaces.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -93,6 +94,29 @@ public class UserController {
             return "user created successfully";
         }
         return "user isn't created";
+    }
+
+    @PostMapping("/isExist")
+    public ResponseEntity<Boolean>  isExist(@RequestBody Map<String, String> requestData) {
+        String emailID = requestData.get("emailID");
+        String password = requestData.get("password");
+
+        if (emailID == null) return ResponseEntity.ok(false);
+        if (password == null) return ResponseEntity.ok(false);
+
+        if (!userRepository.existsById(emailID)) {
+            log.info("does not exist emailID {}", emailID);
+            return ResponseEntity.ok(false);
+        }
+
+        User user = userRepository.findById(emailID).get();
+
+        if (!user.getPassword().equals(password)) {
+            log.info("wrong password : " + password);
+            return ResponseEntity.ok(false);
+        }
+
+        return ResponseEntity.ok(true);
     }
 
     private String nullMessage(String string) {
