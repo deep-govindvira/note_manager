@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Register(onLogin = () => { }) {
+function Register(onLogin = () => {}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [emailID, setEmailID] = useState('');
@@ -11,8 +11,8 @@ function Register(onLogin = () => { }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!username || !password) {
-            alert('please provide username and password')
+        if (!username || !password || !emailID) {
+            alert('please provide username and password and emailID')
             return;
         }
 
@@ -21,6 +21,7 @@ function Register(onLogin = () => { }) {
             if (response.status === 200) {
                 localStorage.setItem('username', username);
                 localStorage.setItem('password', password);
+                localStorage.setItem('emailID', emailID);
                 onLogin(true);
                 navigate('/');
             }
