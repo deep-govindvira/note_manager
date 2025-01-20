@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Response from "./components/Response";
 import Profile from './components/Profile';
+import Register from "./components/Register";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/response" element={<Response />} />
         <Route path="/profile/:name" element={<Profile />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
   );
