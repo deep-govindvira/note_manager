@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Register(onLogin = () => {}) {
+function Register({ setIsLoggedIn }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [emailID, setEmailID] = useState('');
@@ -19,10 +19,11 @@ function Register(onLogin = () => {}) {
         axios.post('http://localhost:8080/user/save', { name : username, password, emailID
         }).then((response) => {
             if (response.status === 200) {
+                console.log(response);
                 localStorage.setItem('username', username);
                 localStorage.setItem('password', password);
                 localStorage.setItem('emailID', emailID);
-                onLogin(true);
+                setIsLoggedIn(true);
                 navigate('/');
             }
         }).catch((error) => {

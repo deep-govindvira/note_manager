@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/note")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class NoteController {
     @Autowired
     private NoteRepository noteRepository;
