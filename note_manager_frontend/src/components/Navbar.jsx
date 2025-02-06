@@ -17,27 +17,71 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "center", padding: "10px", backgroundColor: "#333" }}>
       <nav>
-        <ul>
+        <ul
+          style={{
+            listStyle: "none",
+            display: "flex",
+            gap: "20px",
+            margin: 0,
+            padding: 0,
+          }}
+        >
           {navLinks.map((link, index) => (
             <li key={index}>
-              <NavLink to={link.path}>{link.label}</NavLink>
+              <NavLink
+                to={link.path}
+                style={({ isActive }) => ({
+                  textDecoration: "none",
+                  color: isActive ? "#ffcc00" : "white",
+                  fontWeight: isActive ? "bold" : "normal",
+                  padding: "8px 12px",
+                  transition: "color 0.3s ease",
+                })}
+              >
+                {link.label}
+              </NavLink>
             </li>
           ))}
 
           {!isLoggedIn ? (
             <>
               <li>
-                <NavLink to="/login">Login</NavLink>
+                <NavLink
+                  to="/login"
+                  style={{ textDecoration: "none", color: "white", padding: "8px 12px" }}
+                >
+                  Login
+                </NavLink>
               </li>
               <li>
-                <NavLink to="/register">Register</NavLink>
+                <NavLink
+                  to="/register"
+                  style={{ textDecoration: "none", color: "white", padding: "8px 12px" }}
+                >
+                  Register
+                </NavLink>
               </li>
             </>
           ) : (
             <li>
-              <button onClick={handleLogout}>Logout</button>
+              <button
+                onClick={handleLogout}
+                style={{
+                  backgroundColor: "#ff4444",
+                  color: "white",
+                  border: "none",
+                  borderRadius:"3px",
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                  transition: "background 0.3s ease",
+                }}
+                onMouseOver={(e) => (e.target.style.backgroundColor = "#cc0000")}
+                onMouseOut={(e) => (e.target.style.backgroundColor = "#ff4444")}
+              >
+                Logout
+              </button>
             </li>
           )}
         </ul>

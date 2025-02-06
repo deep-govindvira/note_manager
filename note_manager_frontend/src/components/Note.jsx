@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 const Note = () => {
   const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -20,6 +22,7 @@ const Note = () => {
 
         if (response.status === 200) {
           setNotes(response.data);
+          setFilteredNotes(response.data);
         }
       } catch (error) {
         setError(error.response?.data?.message || 'Failed to fetch notes');
@@ -32,16 +35,31 @@ const Note = () => {
     fetchNotes();
   }, []);
 
+  useEffect(() => {
+    const filtered = notes.filter(note =>
+      note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      note.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredNotes(filtered);
+  }, [searchTerm, notes]);
+
   return (
     <div>
       <h2>All Notes</h2>
+      <input
+        type="text"
+        placeholder="Search notes..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ padding: '8px', marginBottom: '10px', width: '100%', boxSizing: 'border-box' }}
+      />
       {loading && <p>Loading notes...</p>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
 
-      {!loading && notes.length === 0 && !error && <p>No notes available.</p>}
+      {!loading && filteredNotes.length === 0 && !error && <p>No notes found.</p>}
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {notes.map((note) => (
+        {filteredNotes.map((note) => (
           <li
             key={note.id}
             style={{
