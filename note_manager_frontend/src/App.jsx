@@ -8,6 +8,8 @@ import Profile from "./components/Profile";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Note from "./components/Note";
+import New from "./components/New";
+import NoteID from "./components/NoteID";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,6 +26,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path='/note' element={isLoggedIn ? <Note/> : <Navigate to="/login" />} />
+        <Route path='/new' element={isLoggedIn ? <New/> : <Navigate to="/login" />} />
+        <Route path="/:noteId" element={isLoggedIn ? <NoteID/> : <Navigate to="/login" />}  />
         <Route path="/about" element={<About />} />
         <Route path="/response" element={<Response />} />
         <Route path="/profile/:name" element={<Profile />} />

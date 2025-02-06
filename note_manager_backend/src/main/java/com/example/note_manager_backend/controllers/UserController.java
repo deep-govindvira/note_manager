@@ -2,6 +2,7 @@ package com.example.note_manager_backend.controllers;
 
 import com.example.note_manager_backend.entity.Note;
 import com.example.note_manager_backend.entity.User;
+import com.example.note_manager_backend.interfaces.NoteRepository;
 import com.example.note_manager_backend.interfaces.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,10 @@ import java.util.Map;
 @RequestMapping("/user")
 @CrossOrigin(origins = "*")
 public class UserController {
+
+    @Autowired
+    private NoteRepository noteRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -61,6 +66,140 @@ public class UserController {
         }
 
         return user.getNotes();
+    }
+
+    @PostMapping("/notes/delete")
+    public boolean deleteNote(@RequestBody Map<String, String> requestData) {
+        String emailID = requestData.get("emailID");
+        String password = requestData.get("password");
+
+        if (emailID == null) {
+            nullMessage("emailID");
+            return false;
+        }
+        if (password == null) {
+            nullMessage("password");
+            return false;
+        }
+        if (emailID.isEmpty()) {
+            emptyMessage("emailID");
+            return false;
+        }
+        if (password.isEmpty()) {
+            emptyMessage("password");
+            return false;
+        }
+
+        if (!userRepository.existsById(emailID)) {
+            log.info("user " + emailID + " doesn't exist");
+            return false;
+        }
+
+        User user = userRepository.findById(emailID).get();
+
+        if (!user.getPassword().equals(password)) {
+            log.info("wrong password : " + password);
+            return false;
+        }
+
+        String id = requestData.get("id");
+
+        noteRepository.delete(noteRepository.getReferenceById(id));
+
+        return true;
+    }
+
+
+    @PostMapping("/notes/get")
+    public Note getNote(@RequestBody Map<String, String> requestData) {
+
+        String emailID = requestData.get("emailID");
+        String password = requestData.get("password");
+
+        if (emailID == null) {
+            nullMessage("emailID");
+            return null;
+        }
+        if (password == null) {
+            nullMessage("password");
+            return null;
+        }
+        if (emailID.isEmpty()) {
+            emptyMessage("emailID");
+            return null;
+        }
+        if (password.isEmpty()) {
+            emptyMessage("password");
+            return null;
+        }
+
+        if (!userRepository.existsById(emailID)) {
+            log.info("user " + emailID + " doesn't exist");
+            return null;
+        }
+
+        User user = userRepository.findById(emailID).get();
+
+        if (!user.getPassword().equals(password)) {
+            log.info("wrong password : " + password);
+            return null;
+        }
+
+        String id = requestData.get("id");
+
+        return noteRepository.findById(id).get();
+    }
+
+    @PostMapping("/notes/update")
+    public boolean updateNote(@RequestBody Map<String, String> requestData) {
+
+        String emailID = requestData.get("emailID");
+        String password = requestData.get("password");
+
+        if (emailID == null) {
+            nullMessage("emailID");
+            return false;
+        }
+        if (password == null) {
+            nullMessage("password");
+            return false;
+        }
+        if (emailID.isEmpty()) {
+            emptyMessage("emailID");
+            return false;
+        }
+        if (password.isEmpty()) {
+            emptyMessage("password");
+            return false;
+        }
+
+        if (!userRepository.existsById(emailID)) {
+            log.info("user " + emailID + " doesn't exist");
+            return false;
+        }
+
+        User user = userRepository.findById(emailID).get();
+
+        if (!user.getPassword().equals(password)) {
+            log.info("wrong password : " + password);
+            return false;
+        }
+
+        String title = requestData.get("title");
+        String description = requestData.get("description");
+        String color = requestData.get("color");
+        String id = requestData.get("id");
+
+        Note note = Note.builder()
+                .user(user)
+                .id(id)
+                .title(title)
+                .description(description)
+                .color(color)
+                .build();
+
+        noteRepository.save(note);
+        return  true;
     }
 
     @PostMapping("/save")
