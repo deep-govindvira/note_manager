@@ -8,6 +8,7 @@ const Note = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState(localStorage.getItem('viewMode'));
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -53,14 +54,24 @@ const Note = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{ padding: '8px', marginBottom: '10px', width: '100%', boxSizing: 'border-box' }}
       />
+      <div>
+        <button onClick={() => { setViewMode('list'); localStorage.setItem('viewMode', 'list')}}>List View</button>
+        <button onClick={() => { setViewMode('grid'); localStorage.setItem('viewMode', 'grid')}}>Grid View</button>
+      </div>
       {loading && <p>Loading notes...</p>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
 
       {!loading && filteredNotes.length === 0 && !error && <p>No notes found.</p>}
 
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
+      <div
+        style={{
+          display: viewMode === 'grid' ? 'flex' : 'block',
+          flexWrap: 'wrap',
+          gap: '10px',
+        }}
+      >
         {filteredNotes.map((note) => (
-          <li
+          <div
             key={note.id}
             style={{
               backgroundColor: note.color || '#f0f0f0',
@@ -68,15 +79,20 @@ const Note = () => {
               marginBottom: '10px',
               borderRadius: '5px',
               boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: 'calc(33% - 10px)',
+              boxSizing: 'border-box', 
+              minWidth: '250px',
             }}
           >
             <Link to={`/${note.id}`} style={{ textDecoration: 'none', color: 'black' }}>
               <h3>{note.title}</h3>
-              <p>{note.description}</p>
+              <pre>{note.description}</pre>
             </Link>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
