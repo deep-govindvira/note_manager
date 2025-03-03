@@ -22,9 +22,12 @@ public class Note {
     @Lob
     private String description;
     private String color;
+    private String createTime;
+    private String updateTime;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_emailID", nullable = false)
     @JsonBackReference
     private User user;
+
 }
