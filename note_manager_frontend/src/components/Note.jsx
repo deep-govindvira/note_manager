@@ -8,19 +8,17 @@ const Note = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState(localStorage.getItem('viewMode'));
+  const [viewMode, setViewMode] = useState(localStorage.getItem('viewMode') || 'grid');
 
   useEffect(() => {
     const fetchNotes = async () => {
       setLoading(true);
       setError('');
-
       try {
         const response = await axios.post('http://localhost:8080/user/notes', {
           emailID: localStorage.getItem('emailID'),
           password: localStorage.getItem('password'),
         });
-
         if (response.status === 200) {
           setNotes(response.data);
           setFilteredNotes(response.data);
@@ -32,7 +30,6 @@ const Note = () => {
         setLoading(false);
       }
     };
-
     fetchNotes();
   }, []);
 
@@ -45,29 +42,58 @@ const Note = () => {
   }, [searchTerm, notes]);
 
   return (
-    <div>
-      <h2>All Notes</h2>
+    <div style={{ padding: '20px' }}>
+      {/* <h2>All Notes</h2> */}
       <input
         type="text"
         placeholder="Search notes..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ padding: '8px', marginBottom: '10px', width: '100%', boxSizing: 'border-box' }}
+        style={{
+          padding: '10px',
+          marginBottom: '15px',
+          width: '100%',
+          boxSizing: 'border-box',
+          borderRadius: '5px',
+          border: '1px solid #ccc',
+        }}
       />
-      <div>
-        <button onClick={() => { setViewMode('list'); localStorage.setItem('viewMode', 'list')}}>List View</button>
-        <button onClick={() => { setViewMode('grid'); localStorage.setItem('viewMode', 'grid')}}>Grid View</button>
+      <div style={{ marginBottom: '15px', display: 'flex', gap: '10px' }}>
+        <button
+          onClick={() => { setViewMode('list'); localStorage.setItem('viewMode', 'list'); }}
+          style={{
+            padding: '10px 15px',
+            borderRadius: '5px',
+            border: 'none',
+            backgroundColor: viewMode === 'list' ? '#007BFF' : '#ccc',
+            color: 'white',
+            cursor: 'pointer',
+          }}
+        >
+          List View
+        </button>
+        <button
+          onClick={() => { setViewMode('grid'); localStorage.setItem('viewMode', 'grid'); }}
+          style={{
+            padding: '10px 15px',
+            borderRadius: '5px',
+            border: 'none',
+            backgroundColor: viewMode === 'grid' ? '#007BFF' : '#ccc',
+            color: 'white',
+            cursor: 'pointer',
+          }}
+        >
+          Grid View
+        </button>
       </div>
       {loading && <p>Loading notes...</p>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
-
       {!loading && filteredNotes.length === 0 && !error && <p>No notes found.</p>}
-
       <div
         style={{
           display: viewMode === 'grid' ? 'flex' : 'block',
           flexWrap: 'wrap',
-          gap: '10px',
+          gap: '15px',
         }}
       >
         {filteredNotes.map((note) => (
@@ -75,20 +101,18 @@ const Note = () => {
             key={note.id}
             style={{
               backgroundColor: note.color || '#f0f0f0',
-              padding: '10px',
-              marginBottom: '10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: 'calc(33% - 10px)',
-              boxSizing: 'border-box', 
+              padding: '15px',
+              borderRadius: '8px',
+              boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
               minWidth: '250px',
+              flexBasis: viewMode === 'grid' ? 'calc(33% - 15px)' : '100%',
+              boxSizing: 'border-box',
+              marginBottom: '15px',
             }}
           >
             <Link to={`/${note.id}`} style={{ textDecoration: 'none', color: 'black' }}>
               <h3>{note.title}</h3>
-              <pre>{note.description}</pre>
+              <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{note.description}</pre>
             </Link>
           </div>
         ))}
