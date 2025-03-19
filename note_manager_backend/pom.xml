@@ -76,6 +76,15 @@
 			<version>8.0.30</version> <!-- Ensure this is a compatible version -->
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>6.4.3</version>
+		</dependency>
+
+
+
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>

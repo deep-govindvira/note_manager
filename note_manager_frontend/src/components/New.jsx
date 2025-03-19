@@ -24,7 +24,7 @@ const New = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post('http://localhost:8080/note/save', {
+      const response = await axios.post('http://localhost:8080/note', {
         title, 
         description, 
         color,
