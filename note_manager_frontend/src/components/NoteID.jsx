@@ -16,7 +16,7 @@ const NoteID = () => {
         const response = await axios.post(`http://localhost:8080/user/notes/get`, {
           id: noteId,
           emailID: localStorage.getItem('emailID'),
-          password: localStorage.getItem('password')
+          password: localStorage.getItem('password'),
         });
 
         if (response.status === 200) {
@@ -45,7 +45,7 @@ const NoteID = () => {
               description: updatedNote.description,
               color: updatedNote.color,
               emailID: localStorage.getItem('emailID'),
-              password: localStorage.getItem('password')
+              password: localStorage.getItem('password'),
             });
 
             if (response.status === 200) {
@@ -80,12 +80,12 @@ const NoteID = () => {
       const response = await axios.post(`http://localhost:8080/user/notes/delete`, {
         id: noteId,
         emailID: localStorage.getItem('emailID'),
-        password: localStorage.getItem('password')
+        password: localStorage.getItem('password'),
       });
 
       if (response.status === 200) {
         alert('Note deleted successfully!');
-        navigate('/note'); // Redirect to homepage after deletion
+        navigate('/note');
       }
     } catch (error) {
       setError('Failed to delete the note');
@@ -95,29 +95,152 @@ const NoteID = () => {
     }
   };
 
+  const styles = {
+    container: {
+      maxWidth: '480px',
+      margin: '40px auto',
+      padding: '24px',
+      borderRadius: '16px',
+      backgroundColor: '#fafafa',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      fontFamily: 'Arial, sans-serif',
+    },
+    heading: {
+      textAlign: 'center',
+      color: '#333',
+      fontSize: '24px',
+      fontWeight: 'bold',
+      marginBottom: '20px',
+    },
+    formGroup: {
+      marginBottom: '16px',
+    },
+    label: {
+      display: 'block',
+      fontSize: '16px',
+      color: '#555',
+      marginBottom: '6px',
+      fontWeight: '500',
+    },
+    input: {
+      width: '100%',
+      padding: '12px',
+      borderRadius: '8px',
+      border: '1px solid #ccc',
+      fontSize: '16px',
+      outline: 'none',
+      transition: 'border-color 0.2s ease',
+      boxSizing: 'border-box',
+    },
+    textarea: {
+      width: '100%',
+      padding: '12px',
+      borderRadius: '8px',
+      border: '1px solid #ccc',
+      fontSize: '16px',
+      minHeight: '120px',
+      outline: 'none',
+      transition: 'border-color 0.2s ease',
+      boxSizing: 'border-box',
+      resize: 'none',
+    },
+    colorWrapper: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+    },
+    colorCircle: {
+      width: '36px',
+      height: '36px',
+      borderRadius: '50%',
+      border: '2px solid #ccc',
+      cursor: 'pointer',
+      transition: 'transform 0.2s ease',
+    },
+    button: {
+      width: '100%',
+      padding: '14px',
+      borderRadius: '8px',
+      border: 'none',
+      backgroundColor: isDeleting ? '#ccc' : '#d32f2f',
+      color: '#fff',
+      fontSize: '16px',
+      fontWeight: '500',
+      cursor: isDeleting ? 'not-allowed' : 'pointer',
+      transition: 'background-color 0.3s ease',
+      outline: 'none',
+    },
+    error: {
+      color: '#d32f2f',
+      fontSize: '14px',
+      marginBottom: '10px',
+    },
+    saving: {
+      color: '#1976d2',
+      fontSize: '14px',
+      marginBottom: '10px',
+    },
+    deleting: {
+      color: '#f57c00',
+      fontSize: '14px',
+      marginBottom: '10px',
+    },
+  };
+
   return (
-    <div>
-      <h2>Edit Note</h2>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      {isSaving && <div style={{ color: 'blue' }}>Saving...</div>}
-      {isDeleting && <div style={{ color: 'orange' }}>Deleting...</div>}
+    <div style={styles.container}>
+      <h2 style={styles.heading}>Edit Note</h2>
+      {error && <div style={styles.error}>{error}</div>}
+      {isSaving && <div style={styles.saving}>Saving...</div>}
+      {isDeleting && <div style={styles.deleting}>Deleting...</div>}
 
       <form>
-        <div>
-          <label>Title:</label>
-          <input type="text" name="title" value={note.title} onChange={handleChange} />
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Title:</label>
+          <input 
+            type="text" 
+            name="title" 
+            value={note.title} 
+            onChange={handleChange} 
+            style={styles.input} 
+          />
         </div>
-        <div>
-          <label>Description:</label>
-          <textarea name="description" value={note.description} onChange={handleChange} />
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Description:</label>
+          <textarea 
+            name="description" 
+            value={note.description} 
+            onChange={handleChange} 
+            style={styles.textarea} 
+          />
         </div>
-        <div>
-          <label>Color:</label>
-          <input type="color" name="color" value={note.color} onChange={handleChange} />
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Color:</label>
+          <div style={styles.colorWrapper}>
+            <div 
+              style={{
+                ...styles.colorCircle,
+                backgroundColor: note.color,
+              }}
+              onClick={() => document.getElementById('colorInput').click()}
+            />
+            <input 
+              id="colorInput"
+              type="color"
+              name="color"
+              value={note.color}
+              onChange={handleChange}
+              style={{ display: 'none' }}
+            />
+          </div>
         </div>
       </form>
 
-      <button onClick={handleDelete} disabled={isDeleting} style={{ marginTop: '10px', backgroundColor: 'red', color: 'white' }}>
+      <button 
+        onClick={handleDelete} 
+        disabled={isDeleting} 
+        style={styles.button}
+      >
         {isDeleting ? 'Deleting...' : 'Delete Note'}
       </button>
     </div>
