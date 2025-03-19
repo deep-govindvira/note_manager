@@ -6,6 +6,7 @@ import com.example.note_manager_backend.interfaces.NoteRepository;
 import com.example.note_manager_backend.interfaces.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final NoteRepository noteRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public List<Note> getNotes(String emailID, String password) {
         if (!validateUser(emailID, password)) {
@@ -73,11 +75,15 @@ public class UserService {
             log.info("User with emailID {} already exists", emailID);
             return "EmailID " + emailID + " already exists";
         }
+
+        String hashedPassword = passwordEncoder.encode(password);
+
         User user = User.builder()
                 .emailID(emailID)
                 .name(name)
-                .password(password)
+                .password(hashedPassword)
                 .build();
+
         userRepository.save(user);
         if (userRepository.existsById(emailID)) {
             return "User created successfully";
@@ -100,7 +106,9 @@ public class UserService {
             return false;
         }
         User user = userOptional.get();
-        if (!user.getPassword().equals(password)) {
+
+        // Use BCrypt to match passwords
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             log.info("Wrong password for user {}", emailID);
             return false;
         }
