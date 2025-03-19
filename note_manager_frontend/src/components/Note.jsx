@@ -66,7 +66,7 @@ const Note = () => {
             borderRadius: '5px',
             border: 'none',
             backgroundColor: viewMode === 'list' ? '#007BFF' : '#ccc',
-            color: 'white',
+            color: 'black',
             cursor: 'pointer',
           }}
         >
@@ -79,7 +79,7 @@ const Note = () => {
             borderRadius: '5px',
             border: 'none',
             backgroundColor: viewMode === 'grid' ? '#007BFF' : '#ccc',
-            color: 'white',
+            color: 'black',
             cursor: 'pointer',
           }}
         >

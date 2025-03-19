@@ -4,9 +4,9 @@ const navLinks = [
   { path: "/", label: "Home" },
   { path: "/note", label: "Note" },
   { path: "/new", label: "New" },
-  { path: "/about", label: "About" },
-  { path: "/response", label: "Response" },
-  { path: "/profile/username", label: "Profile" },
+  // { path: "/about", label: "About" },
+  // { path: "/response", label: "Response" },
+  // { path: "/profile/username", label: "Profile" },
 ];
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
